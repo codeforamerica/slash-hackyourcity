@@ -12,7 +12,7 @@ var request = require('request');
 require('dotenv').config();
 
 var Redis_Store = require('./redis_storage.js');
-var redis_url = "redis://127.0.0.1:6379"
+var redis_url = process.env.REDIS_URL
 var redis_store = new Redis_Store({url: redis_url});
 
 var controller = Botkit.slackbot({
