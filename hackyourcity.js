@@ -38,10 +38,23 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
 
 controller.on('slash_command',function(bot,message) {
 
-  request('https://codeforamerica.org/api/issues?per_page=1', function (error, response, body) {
+  request('https://codeforamerica.org/api/issues/labels/help wanted?per_page=1', function (error, response, body) {
     if (!error && response.statusCode == 200) {
       response = JSON.parse(body);
       civicIssue = response.objects[0];
+
+      var labels = [];
+      for (label of civicIssue.labels) {
+        labels.push(label.name);
+      }
+      civicIssue.labelString = labels.join(", ");
+
+      var languages = [];
+      for (language of civicIssue.project.languages) {
+        languages.push(language);
+      }
+      civicIssue.languages = languages.join(", ");
+
       
       bot.replyPublic(message,{
         attachments: [
@@ -67,7 +80,17 @@ controller.on('slash_command',function(bot,message) {
                         "title": "Project",
                         "value": civicIssue.project.name,
                         "short": true
-                    }
+                    },
+                    {
+                        "title": "Labels",
+                        "value": civicIssue.labelString,
+                        "short": true
+                    },
+                    {
+                        "title": "Laguages",
+                        "value": civicIssue.languages,
+                        "short": true
+                    },
                 ],
 
             }
