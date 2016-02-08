@@ -61,59 +61,65 @@ controller.on('slash_command',function(bot,message) {
     if (!error && response.statusCode == 200) {
       response = JSON.parse(body);
       civicIssue = response.objects[0];
+      // If there is an issue
+      if (civicIssue) {
 
-      var labels = [];
-      for (label of civicIssue.labels) {
-        labels.push(label.name);
+        var labels = [];
+        for (label of civicIssue.labels) {
+          labels.push(label.name);
+        }
+        civicIssue.labelString = labels.join(", ");
+
+        var languages = [];
+        for (language of civicIssue.project.languages) {
+          languages.push(language);
+        }
+        civicIssue.languages = languages.join(", ");
+
+        bot.replyPublic(message,{
+          attachments: [
+              {
+                  "fallback": civicIssue.title + " " + civicIssue.html_url,
+
+                  "color": "good",
+
+                  "pretext": "I found a civic issue for you. :robot_face:",
+
+                  "title": civicIssue.title,
+                  "title_link": civicIssue.html_url,
+
+                  "text" : civicIssue.body,
+
+                  "fields": [
+                      {
+                          "title": "Organization",
+                          "value": civicIssue.project.organization_name,
+                          "short": true
+                      },
+                      {
+                          "title": "Project",
+                          "value": civicIssue.project.name,
+                          "short": true
+                      },
+                      {
+                          "title": "Labels",
+                          "value": civicIssue.labelString,
+                          "short": true
+                      },
+                      {
+                          "title": "Laguages",
+                          "value": civicIssue.languages,
+                          "short": true
+                      },
+                  ],
+
+              }
+            ]
+        });
+
+      } else {
+        bot.replyPublic(message,"No issue found. Probably my fault. Try again! :rocket:");
       }
-      civicIssue.labelString = labels.join(", ");
-
-      var languages = [];
-      for (language of civicIssue.project.languages) {
-        languages.push(language);
-      }
-      civicIssue.languages = languages.join(", ");
-
-      bot.replyPublic(message,{
-        attachments: [
-            {
-                "fallback": civicIssue.title + " " + civicIssue.html_url,
-
-                "color": "good",
-
-                "pretext": "I found a civic issue for you. :robot_face:",
-
-                "title": civicIssue.title,
-                "title_link": civicIssue.html_url,
-
-                "text" : civicIssue.body,
-
-                "fields": [
-                    {
-                        "title": "Organization",
-                        "value": civicIssue.project.organization_name,
-                        "short": true
-                    },
-                    {
-                        "title": "Project",
-                        "value": civicIssue.project.name,
-                        "short": true
-                    },
-                    {
-                        "title": "Labels",
-                        "value": civicIssue.labelString,
-                        "short": true
-                    },
-                    {
-                        "title": "Laguages",
-                        "value": civicIssue.languages,
-                        "short": true
-                    },
-                ],
-
-            }
-          ]
-      });
 
     } else {
       if (response.statusCode == 404) {
