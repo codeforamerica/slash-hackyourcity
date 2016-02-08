@@ -1,6 +1,6 @@
 {
   "name": "slash-hackyourcity",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A Slack App that makes it easy to find civic hacks that need your help.",
   "main": "",
   "scripts": {
