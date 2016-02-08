@@ -115,6 +115,10 @@ controller.on('slash_command',function(bot,message) {
           ]
       });
 
+    } else {
+      if (response.statusCode == 404) {
+        bot.replyPublic(message,"Organization not found. Its case sensitive. You can see the full list at https://github.com/codeforamerica/brigade-information/blob/master/organizations.json");
+      }
     }
   });
 });
