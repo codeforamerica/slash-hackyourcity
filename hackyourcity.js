@@ -44,7 +44,7 @@ controller.on('slash_command',function(bot,message) {
      "text": "How to /hackyourcity",
      "attachments":[
          {
-            "text": "To get an open civic issue that someone has asked for help on, use `/hackyourcity issue`.\nTo find a civic project that is interesting to you, use `/hackyourcity project`.\nYou can also search for projects like `/hackyourcity project schools, javascript`"
+            "text": "To get an open civic issue that someone has asked for help on, just type `/hackyourcity issue`.\nTo find issues from a specific group, use `/hackyourcity issue <groupname>` like `/hackyourcity issues Code for San Francisco`\nTo find a civic project that is interesting to you, use `/hackyourcity project`.\nYou can also search for projects like `/hackyourcity project schools, javascript`"
          }
      ]
     });
@@ -53,7 +53,14 @@ controller.on('slash_command',function(bot,message) {
   // Civic Issue
   if (message.text.includes("issue")) {
 
-    request('https://codeforamerica.org/api/issues/labels/help wanted?per_page=1', function (error, response, body) {
+    var organization_name = message.text.replace("issue","").trim().replace(" ","-");
+    if (organization_name){
+      var url = 'https://codeforamerica.org/api/organizations/'+organization_name+'/issues/labels/help wanted?per_page=1'
+    }
+    else {
+      var url = 'https://codeforamerica.org/api/issues/labels/help wanted?per_page=1'
+    }
+    request(url, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         response = JSON.parse(body);
         civicIssue = response.objects[0];
@@ -119,7 +126,7 @@ controller.on('slash_command',function(bot,message) {
   // Project Search
   if (message.text.includes("project")) {
 
-    var search = message.text.replace("project ","");
+    var search = message.text.replace("project","");
     var url = 'https://codeforamerica.org/api/projects?per_page=1&q=' + search;
 
     request(url, function (error, response, body) {
