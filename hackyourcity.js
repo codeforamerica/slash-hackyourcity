@@ -52,10 +52,10 @@ controller.on('slash_command',function(bot,message) {
 
   var organization_name = message.text.trim().replace(" ","-");
   if (organization_name){
-    var url = 'https://codeforamerica.org/api/organizations/'+organization_name+'/issues/labels/help wanted?per_page=1'
+    var url = 'http://api.codeforamerica.org/api/organizations/'+organization_name+'/issues/labels/help wanted?per_page=1'
   }
   else {
-    var url = 'https://codeforamerica.org/api/issues/labels/help wanted?per_page=1'
+    var url = 'http://api.codeforamerica.org/api/issues/labels/help wanted?per_page=1'
   }
   request(url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
